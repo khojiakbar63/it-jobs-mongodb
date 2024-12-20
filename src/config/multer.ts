@@ -2,7 +2,7 @@ import path from "path";
 import multer from "multer";
 
 // Setting storage engine for multer
-const storage = multer.diskStorage({
+export const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, path.join(__dirname, "../uploads/"));
   },
@@ -11,4 +11,17 @@ const storage = multer.diskStorage({
   },
 });
 
-export const upload = multer({ storage });
+
+const fileFilter = (req:Request, file:Express.Multer.File, cb:Function) => {
+  if (
+    file.mimetype === "image/jpeg" ||
+    file.mimetype === "image/png" ||
+    file.mimetype === "image/jpg"
+  ) {
+    cb(null, true);
+  } else {
+    cb(new Error("Only images are allowed"), false);
+  }
+}
+
+export const upload = multer({ storage, fileFilter :  void fileFilter });

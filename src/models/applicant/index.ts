@@ -1,13 +1,39 @@
 import mongoose from "mongoose";
+import { IApplicant } from "../../interfaces/applicant";
+import { Schema } from "mongoose";
 
 
+const ApplicantSchema = new Schema<IApplicant>(
+  {
+    user: {
+      type: Schema.Types.ObjectId,
+      ref: "user",
+      required: true,
+    },
+    job: {
+      type: Schema.Types.ObjectId,
+      ref: "job",
+      required: true,
+    },
+    status: {
+      type: String,
+      enum: ["pending", "accepted", "rejected"],
+      default: "pending",
+    },
+    notes: {
+      type: String,
+      required: true,
+    },
+    resumeUrl: {
+      type: String,
+      required: true,
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
 
-const jobApplicationSchema = new mongoose.Schema({
-    user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-    job: { type: mongoose.Schema.Types.ObjectId, ref: "Job", required: true },
-    status: { type: String, enum: ["Applied", "Interviewed", "Hired", "Rejected"], default: "Applied" },
-    appliedAt: { type: Date, default: Date.now },
-  });
   
-  export const JobApplication = mongoose.model("JobApplication", jobApplicationSchema);
+  export const ApplicantModel = mongoose.model<IApplicant>("Applicant", ApplicantSchema);
   

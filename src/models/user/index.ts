@@ -71,14 +71,13 @@ const UserSchema = new Schema<IUser>(
           default: null,
         },
       },
-    ],
-    appliedJobs: [{ type: mongoose.Schema.Types.ObjectId, ref: "Job" }],
+    ]
   },
   {
     timestamps: true,
   }
 );
 
-const UserModel = model<IUser>("User", UserSchema);
+const UserModel = model<IUser>("user", UserSchema);
 
 export default UserModel;

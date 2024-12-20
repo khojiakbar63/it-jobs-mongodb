@@ -41,13 +41,12 @@ const JobSchema = new Schema<IJob>(
         required: true,
       },
     },
-    applicants: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
   },
   {
     timestamps: true,
   }
 );
 
-const JobModel: Model<IJob> = model<IJob>("Job", JobSchema);
+const JobModel: Model<IJob> = model<IJob>("job", JobSchema);
 
 export default JobModel;

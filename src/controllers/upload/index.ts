@@ -6,18 +6,7 @@ import cloudinary from "../../config/cloudinary";
 import path from "path";
 import multer from "multer";
 
-// Setting storage engine for multer
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, path.join(__dirname, "../../uploads/"));
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + "-" + file.originalname);
-  },
-});
-
-export const upload = multer({ storage });
-
+// POST : single image
 export const uploadImage = async (
   req: Request,
   res: Response,
@@ -49,6 +38,7 @@ export const uploadImage = async (
   }
 };
 
+// POST : multiple images
 export const uploadMultipleImages = async (
   req: Request,
   res: Response,
@@ -80,6 +70,43 @@ export const uploadMultipleImages = async (
       message: "Multiple images uploaded successfully",
       imgUrls,
     });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// POST : PDF
+export const uploadPDF = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({
+        success: false,
+        message: "No file uploaded",
+      });
+
+    }
+    if (!req?.file?.path) {
+      throw new Error("File path is undefined");
+    }
+
+    const pdfUrl = await cloudinary.uploader.upload(req?.file?.path, {
+      folder: "it-jobs",
+      resource_type: "raw",
+    });
+
+
+    // Remove the file from the local filesystem
+    await fs.unlink(req?.file?.path);
+
+    res.status(200).json({
+      success: true,
+      message: "PDF uploaded successfully",
+      pdfUrl: pdfUrl?.secure_url,
+    })
   } catch (error) {
     next(error);
   }
